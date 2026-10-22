@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Confira os móveis disponíveis e entre em contato para comprar.">
+  <title>Móveis à Venda | Encontre seu próximo móvel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="#inicio" aria-label="Página inicial">Móveis à Venda<span>.</span></a>
+    <nav aria-label="Navegação principal">
+      <a href="#catalogo">Catálogo</a>
+      <a href="#sobre">Informações</a>
+      <a class="nav-contact" href="#contato">Fale conosco</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-copy">
+        <p class="eyebrow">PEÇAS SELECIONADAS • OPORTUNIDADES ÚNICAS</p>
+        <h1>Encontre o móvel ideal para o seu espaço.</h1>
+        <p class="hero-description">Confira os itens disponíveis, veja os detalhes e fale diretamente pelo WhatsApp para tirar dúvidas ou combinar a compra.</p>
+        <a class="button button-dark" href="#catalogo">Ver catálogo <span aria-hidden="true">↓</span></a>
+      </div>
+      <div class="hero-art" aria-label="Espaço reservado para foto de destaque">
+        <div class="hero-art-inner">
+          <span>SEU PRÓXIMO ACHADO</span>
+          <p>Estilo, conforto<br>e boas oportunidades.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="catalog-section" id="catalogo">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">CATÁLOGO</p>
+          <h2>Móveis disponíveis</h2>
+        </div>
+        <p class="section-note">Os itens são atualizados conforme a disponibilidade.</p>
+      </div>
+
+      <div class="filter-row" aria-label="Filtros do catálogo">
+        <button class="filter-button active" type="button" data-filter="todos">Todos os itens</button>
+        <button class="filter-button" type="button" data-filter="sala">Sala</button>
+        <button class="filter-button" type="button" data-filter="quarto">Quarto</button>
+        <button class="filter-button" type="button" data-filter="cozinha">Cozinha</button>
+        <button class="filter-button" type="button" data-filter="escritorio">Escritório</button>
+        <button class="filter-button" type="button" data-filter="decoracao">Decoração</button>
+        <button class="filter-button" type="button" data-filter="eletronicos">Eletrônicos</button>
+        <button class="filter-button" type="button" data-filter="outros">Outros</button>
+      </div>
+
+      <div class="product-grid" id="product-grid" aria-live="polite"></div>
+    </section>
+
+    <section class="info-section" id="sobre">
+      <div>
+        <p class="eyebrow">ANTES DE COMPRAR</p>
+        <h2>Gostou de algum item?</h2>
+      </div>
+      <p>Selecione o móvel desejado e entre em contato pelo WhatsApp para confirmar a disponibilidade, combinar a retirada e tirar suas dúvidas.</p>
+    </section>
+
+    <section class="contact-section" id="contato">
+      <div>
+        <p class="eyebrow">CONTATO DIRETO</p>
+        <h2>Vamos conversar?</h2>
+        <p>Estamos à disposição para ajudar você a escolher seu próximo móvel.</p>
+      </div>
+      <a class="button button-light" id="general-whatsapp" href="#" target="_blank" rel="noopener noreferrer">Chamar no WhatsApp <span aria-hidden="true">↗</span></a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="brand" href="#inicio">Móveis à Venda<span>.</span></a>
+    <p>Consulte a disponibilidade antes de concluir a compra.</p>
+    <p>© <span id="current-year"></span> • Todos os direitos reservados</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

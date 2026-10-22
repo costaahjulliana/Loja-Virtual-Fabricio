@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel administrativo | Móveis à Venda</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+  <header class="site-header">
+    <a class="brand" href="index.html">Móveis à Venda<span>.</span></a>
+    <a class="nav-contact" href="index.html">Ver loja ↗</a>
+  </header>
+  <main class="admin-main">
+    <section class="admin-intro">
+      <p class="eyebrow">ÁREA RESTRITA</p>
+      <h1>Painel administrativo</h1>
+      <p>Gerencie a disponibilidade dos móveis sem precisar editar o código do site.</p>
+    </section>
+
+    <section class="admin-panel" id="login-panel">
+      <h2>Acessar painel</h2>
+      <p>Entre com o e-mail e a senha cadastrados no Supabase.</p>
+      <form id="login-form" class="admin-form">
+        <label for="email">E-mail</label>
+        <input id="email" type="email" autocomplete="username" required>
+        <label for="password">Senha</label>
+        <input id="password" type="password" autocomplete="current-password" required>
+        <button class="button button-dark" type="submit">Entrar</button>
+        <p class="form-message" id="login-message" role="status"></p>
+      </form>
+    </section>
+
+    <section class="admin-panel hidden" id="dashboard-panel">
+      <div class="dashboard-heading">
+        <div><h2>Seus produtos</h2><p>Use o botão para alterar a disponibilidade de cada item.</p></div>
+        <button id="logout-button" class="button button-outline" type="button">Sair</button>
+      </div>
+      <div class="admin-tools">
+        <input id="search-products" type="search" placeholder="Buscar produto..." aria-label="Buscar produto">
+        <select id="status-filter" aria-label="Filtrar por disponibilidade">
+          <option value="todos">Todos os produtos</option>
+          <option value="disponivel">Disponíveis</option>
+          <option value="vendido">Vendidos</option>
+        </select>
+      </div>
+      <p class="form-message" id="dashboard-message" role="status"></p>
+      <div id="admin-product-list" class="admin-product-list"></div>
+    </section>
+    <p class="admin-footnote">A segurança é controlada pelo Supabase. Não compartilhe sua senha e nunca publique uma chave service_role no site.</p>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

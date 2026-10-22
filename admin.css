@@ -1,0 +1,36 @@
+.admin-body { min-height: 100vh; }
+.admin-main { width: min(980px, 90%); margin: 0 auto; padding: 55px 0 80px; }
+.admin-intro { margin-bottom: 28px; }
+.admin-intro h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); }
+.admin-intro > p:last-child, .admin-panel > p, .dashboard-heading p { color: var(--muted); }
+.admin-panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 28px; margin: 22px 0; }
+.admin-panel h2 { font-size: 1.8rem; }
+.admin-form { display: grid; gap: 9px; max-width: 440px; margin-top: 20px; }
+.admin-form label { font-size: .9rem; font-weight: 600; }
+.admin-form input, .admin-tools input, .admin-tools select { width: 100%; padding: 12px 13px; border: 1px solid var(--border); border-radius: 4px; background: white; color: var(--ink); font: inherit; }
+.admin-form .button { margin-top: 12px; cursor: pointer; border: 0; }
+.hidden { display: none !important; }
+.dashboard-heading { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+.button-outline { border: 1px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; }
+.admin-tools { display: grid; grid-template-columns: 1fr 220px; gap: 12px; margin: 22px 0; }
+.admin-product-list { display: grid; gap: 10px; }
+.admin-product-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px; border: 1px solid var(--border); padding: 15px; border-radius: 5px; }
+.admin-product-name { font-weight: 700; }
+.admin-product-meta { color: var(--muted); font-size: .88rem; margin-top: 4px; }
+.admin-status { font-size: .78rem; font-weight: 700; display: inline-block; margin-top: 5px; }
+.admin-status.available { color: #2e6c45; }
+.admin-status.sold { color: var(--sold); }
+.status-toggle { border: 1px solid var(--ink); background: transparent; color: var(--ink); padding: 9px 12px; border-radius: 4px; cursor: pointer; font: inherit; font-size: .85rem; }
+.status-toggle:hover { background: var(--ink); color: white; }
+.status-toggle:disabled { opacity: .55; cursor: wait; }
+.form-message { min-height: 1.3em; font-size: .9rem; color: var(--muted); }
+.form-message.error { color: var(--sold); }
+.admin-footnote { color: var(--muted); font-size: .8rem; }
+@media (max-width: 620px) {
+  .admin-main { padding-top: 35px; }
+  .admin-panel { padding: 20px; }
+  .admin-tools { grid-template-columns: 1fr; }
+  .admin-product-row { grid-template-columns: 1fr; }
+  .status-toggle { width: 100%; }
+}
+
