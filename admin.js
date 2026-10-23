@@ -74,6 +74,7 @@ function renderAdminProducts() {
         </div>
       </div>
       <div class="admin-row-actions">
+        <button class="name-edit-button" type="button" data-name-id="${p.id}">Editar nome</button>
         <button class="photo-edit-button" type="button" data-photo-id="${p.id}"> ${(p.image_urls && p.image_urls.length) || p.image_url ? `Fotos (${(p.image_urls && p.image_urls.length) || 1})` : "Adicionar fotos"}</button>
         <button class="status-toggle" type="button" data-id="${p.id}" data-available="${p.available}">
           ${p.available ? "Marcar como vendido" : "Marcar como disponível"}
@@ -83,19 +84,52 @@ function renderAdminProducts() {
   if (!shown.length) productList.innerHTML = "<p>Nenhum produto encontrado.</p>";
   productList.querySelectorAll(".status-toggle").forEach(button => button.addEventListener("click", () => toggleAvailability(button)));
   productList.onclick = event => {
+    const nameButton = event.target.closest(".name-edit-button");
+    if (nameButton) {
+      event.preventDefault();
+      editProductName(nameButton);
+      return;
+    }
     const photoButton = event.target.closest(".photo-edit-button");
     if (photoButton) {
       event.preventDefault();
       openPhotoModal(Number(photoButton.dataset.photoId));
     }
   };
-  // Delegação de evento: mantém o botão funcional mesmo após re-renderizar a lista.
-  productList.querySelectorAll(".photo-edit-button").forEach(button => {
-    button.onclick = () => openPhotoModal(Number(button.dataset.photoId));
-  });
 }
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+async function editProductName(button) {
+  if (!client) return;
+  const id = Number(button.dataset.nameId);
+  const product = allProducts.find(p => Number(p.id) === id);
+  if (!product) return;
+
+  const enteredName = prompt("Digite o novo nome do produto:", product.name);
+  if (enteredName === null) return;
+  const name = enteredName.trim();
+
+  if (!name) {
+    alert("O nome do produto não pode ficar vazio.");
+    return;
+  }
+  if (name === product.name) return;
+
+  button.disabled = true;
+  message(dashboardMessage, "Salvando nome do produto...");
+  const { error } = await client.from("products").update({ name }).eq("id", id);
+  button.disabled = false;
+
+  if (error) {
+    console.error(error);
+    message(dashboardMessage, "Não foi possível atualizar o nome. Confira se você está logado e se as políticas do Supabase permitem atualizar produtos.", true);
+    return;
+  }
+
+  product.name = name;
+  message(dashboardMessage, "Nome do produto atualizado com sucesso.");
+  renderAdminProducts();
 }
 async function toggleAvailability(button) {
   if (!client) return;
@@ -153,7 +187,6 @@ async function init() {
   }
 }
 init();
-
 
 function getProductPhotos(product) {
   const photos = Array.isArray(product.image_urls) ? product.image_urls.filter(Boolean) : [];
