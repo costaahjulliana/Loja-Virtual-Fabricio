@@ -51,18 +51,18 @@
     <section id="photo-modal" class="photo-modal hidden" aria-hidden="true">
       <div class="photo-modal-card" role="dialog" aria-modal="true" aria-labelledby="photo-modal-title">
         <div class="photo-modal-heading">
-          <div><p class="eyebrow">IMAGEM DO PRODUTO</p><h2 id="photo-modal-title">Adicionar ou trocar foto</h2></div>
+          <div><p class="eyebrow">IMAGEM DO PRODUTO</p><h2 id="photo-modal-title">Fotos do produto</h2></div>
           <button id="close-photo-modal" class="button button-outline" type="button" aria-label="Fechar">Fechar</button>
         </div>
         <p id="photo-product-name" class="photo-product-name"></p>
-        <div id="photo-preview-wrap" class="photo-preview-wrap"><img id="photo-preview" alt="Prévia da foto selecionada" class="hidden"><span id="photo-placeholder">Nenhuma foto cadastrada</span></div>
-        <label class="upload-label" for="photo-file">Escolher foto do computador ou celular</label>
-        <input id="photo-file" type="file" accept="image/*">
-        <p class="photo-help">Use JPG, PNG ou WebP. Recomendado: imagem nítida, até 5 MB.</p>
+        <div id="photo-gallery-preview" class="photo-gallery-preview"><p id="photo-placeholder">Nenhuma foto cadastrada</p></div>
+        <label class="upload-label" for="photo-file">Escolher uma ou várias fotos do computador ou celular</label>
+        <input id="photo-file" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+        <p class="photo-help">Você pode selecionar várias fotos de uma vez. Use JPG, PNG ou WebP; cada imagem deve ter até 5 MB. As fotos já salvas serão mantidas ao adicionar novas.</p>
         <p id="photo-message" class="form-message" role="status"></p>
         <div class="photo-modal-actions">
-          <button id="remove-photo-button" class="button button-outline" type="button">Remover foto</button>
-          <button id="save-photo-button" class="button button-dark" type="button">Salvar foto</button>
+          <button id="remove-photo-button" class="button button-outline" type="button">Remover todas as fotos</button>
+          <button id="save-photo-button" class="button button-dark" type="button">Enviar fotos selecionadas</button>
         </div>
       </div>
     </section>

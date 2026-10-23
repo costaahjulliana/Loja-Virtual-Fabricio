@@ -17,12 +17,12 @@ const dashboardMessage = document.querySelector("#dashboard-message");
 const productList = document.querySelector("#admin-product-list");
 let allProducts = [];
 let editingPhotoProduct = null;
-let selectedPhotoFile = null;
+let selectedPhotoFiles = [];
 let previewObjectUrl = null;
 
 const photoModal = document.querySelector("#photo-modal");
 const photoFileInput = document.querySelector("#photo-file");
-const photoPreview = document.querySelector("#photo-preview");
+const photoGalleryPreview = document.querySelector("#photo-gallery-preview");
 const photoPlaceholder = document.querySelector("#photo-placeholder");
 const photoMessage = document.querySelector("#photo-message");
 const savePhotoButton = document.querySelector("#save-photo-button");
@@ -66,7 +66,7 @@ function renderAdminProducts() {
   productList.innerHTML = shown.map(p => `
     <article class="admin-product-row">
       <div class="admin-product-main">
-        ${p.image_url ? `<img class="admin-thumb" src="${escapeHtml(p.image_url)}" alt="Foto de ${escapeHtml(p.name)}">` : `<div class="admin-thumb admin-thumb-empty">Sem foto</div>`}
+        ${(p.image_urls && p.image_urls.length ? p.image_urls[0] : p.image_url) ? `<img class="admin-thumb" src="${escapeHtml((p.image_urls && p.image_urls.length ? p.image_urls[0] : p.image_url))}" alt="Foto de ${escapeHtml(p.name)}">` : `<div class="admin-thumb admin-thumb-empty">Sem foto</div>`}
         <div>
           <div class="admin-product-name">${escapeHtml(p.name)}</div>
           <div class="admin-product-meta">${money(p.price)} · ${escapeHtml(p.category_label || p.category)}</div>
@@ -74,7 +74,7 @@ function renderAdminProducts() {
         </div>
       </div>
       <div class="admin-row-actions">
-        <button class="photo-edit-button" type="button" data-photo-id="${p.id}"> ${p.image_url ? "Trocar foto" : "Adicionar foto"}</button>
+        <button class="photo-edit-button" type="button" data-photo-id="${p.id}"> ${(p.image_urls && p.image_urls.length) || p.image_url ? `Fotos (${(p.image_urls && p.image_urls.length) || 1})` : "Adicionar fotos"}</button>
         <button class="status-toggle" type="button" data-id="${p.id}" data-available="${p.available}">
           ${p.available ? "Marcar como vendido" : "Marcar como disponível"}
         </button>
@@ -145,26 +145,44 @@ async function init() {
 init();
 
 
-function setPhotoPreview(url) {
-  if (url) {
-    photoPreview.src = url;
-    photoPreview.classList.remove("hidden");
-    photoPlaceholder.classList.add("hidden");
-  } else {
-    photoPreview.removeAttribute("src");
-    photoPreview.classList.add("hidden");
-    photoPlaceholder.classList.remove("hidden");
+function getProductPhotos(product) {
+  const photos = Array.isArray(product.image_urls) ? product.image_urls.filter(Boolean) : [];
+  if (!photos.length && product.image_url) photos.push(product.image_url);
+  return [...new Set(photos)];
+}
+function renderPhotoPreview() {
+  if (!editingPhotoProduct) return;
+  const savedPhotos = getProductPhotos(editingPhotoProduct);
+  const newPhotos = selectedPhotoFiles.map(file => ({ name: file.name, preview: URL.createObjectURL(file), isNew: true }));
+  photoGalleryPreview.innerHTML = "";
+  if (!savedPhotos.length && !newPhotos.length) {
+    photoGalleryPreview.innerHTML = '<p id="photo-placeholder">Nenhuma foto cadastrada</p>';
+    return;
   }
+  savedPhotos.forEach((url, index) => {
+    const img = document.createElement("img");
+    img.className = "admin-photo-preview";
+    img.src = url;
+    img.alt = `Foto cadastrada ${index + 1}`;
+    photoGalleryPreview.appendChild(img);
+  });
+  newPhotos.forEach((photo, index) => {
+    const img = document.createElement("img");
+    img.className = "admin-photo-preview is-new";
+    img.src = photo.preview;
+    img.alt = `Nova foto ${index + 1}`;
+    photoGalleryPreview.appendChild(img);
+  });
 }
 function openPhotoModal(productId) {
   editingPhotoProduct = allProducts.find(p => Number(p.id) === productId);
   if (!editingPhotoProduct) return;
-  selectedPhotoFile = null;
+  selectedPhotoFiles = [];
   photoFileInput.value = "";
   document.querySelector("#photo-product-name").textContent = editingPhotoProduct.name;
   message(photoMessage, "");
-  setPhotoPreview(editingPhotoProduct.image_url || "");
-  removePhotoButton.disabled = !editingPhotoProduct.image_url;
+  renderPhotoPreview();
+  removePhotoButton.disabled = getProductPhotos(editingPhotoProduct).length === 0;
   photoModal.classList.remove("hidden");
   photoModal.setAttribute("aria-hidden", "false");
 }
@@ -172,77 +190,77 @@ function closePhotoModal() {
   photoModal.classList.add("hidden");
   photoModal.setAttribute("aria-hidden", "true");
   editingPhotoProduct = null;
-  selectedPhotoFile = null;
-  if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
-  previewObjectUrl = null;
+  selectedPhotoFiles = [];
+  photoGalleryPreview.innerHTML = "";
 }
 photoFileInput.addEventListener("change", () => {
-  const file = photoFileInput.files && photoFileInput.files[0];
-  selectedPhotoFile = file || null;
-  if (!file) return;
-  if (!file.type.startsWith("image/")) {
-    selectedPhotoFile = null;
+  const files = Array.from(photoFileInput.files || []);
+  const invalid = files.find(file => !["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 5 * 1024 * 1024);
+  if (invalid) {
+    selectedPhotoFiles = [];
     photoFileInput.value = "";
-    message(photoMessage, "Selecione um arquivo de imagem.", true);
+    message(photoMessage, "Use apenas JPG, PNG ou WebP, com no máximo 5 MB por imagem.", true);
+    renderPhotoPreview();
     return;
   }
-  if (file.size > 5 * 1024 * 1024) {
-    selectedPhotoFile = null;
-    photoFileInput.value = "";
-    message(photoMessage, "A imagem deve ter no máximo 5 MB.", true);
-    return;
-  }
-  if (previewObjectUrl) URL.revokeObjectURL(previewObjectUrl);
-  previewObjectUrl = URL.createObjectURL(file);
-  setPhotoPreview(previewObjectUrl);
-  message(photoMessage, "Prévia pronta. Clique em Salvar foto para publicar.");
+  selectedPhotoFiles = files;
+  renderPhotoPreview();
+  message(photoMessage, files.length ? `${files.length} foto(s) selecionada(s). Clique em Enviar fotos selecionadas.` : "Nenhuma foto nova selecionada.");
 });
 document.querySelector("#close-photo-modal").addEventListener("click", closePhotoModal);
 photoModal.addEventListener("click", event => { if (event.target === photoModal) closePhotoModal(); });
 savePhotoButton.addEventListener("click", async () => {
-  if (!client || !editingPhotoProduct || !selectedPhotoFile) {
-    message(photoMessage, "Escolha uma foto antes de salvar.", true);
+  if (!client || !editingPhotoProduct || !selectedPhotoFiles.length) {
+    message(photoMessage, "Selecione uma ou mais fotos antes de enviar.", true);
     return;
   }
   savePhotoButton.disabled = true;
   removePhotoButton.disabled = true;
-  message(photoMessage, "Enviando foto para a nuvem...");
+  message(photoMessage, "Enviando fotos para a nuvem...");
   try {
-    const safeName = selectedPhotoFile.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9._-]/g, "-");
-    const filePath = `${editingPhotoProduct.id}/${Date.now()}-${safeName}`;
-    const { error: uploadError } = await client.storage.from(STORAGE_BUCKET).upload(filePath, selectedPhotoFile, { upsert: true, contentType: selectedPhotoFile.type, cacheControl: "3600" });
-    if (uploadError) throw uploadError;
-    const { data: publicData } = client.storage.from(STORAGE_BUCKET).getPublicUrl(filePath);
-    const { error: updateError } = await client.from("products").update({ image_url: publicData.publicUrl }).eq("id", editingPhotoProduct.id);
+    const uploadedUrls = [];
+    for (const file of selectedPhotoFiles) {
+      const safeName = file.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9._-]/g, "-");
+      const filePath = `${editingPhotoProduct.id}/${Date.now()}-${Math.random().toString(36).slice(2,8)}-${safeName}`;
+      const { error: uploadError } = await client.storage.from(STORAGE_BUCKET).upload(filePath, file, { upsert: false, contentType: file.type, cacheControl: "3600" });
+      if (uploadError) throw uploadError;
+      const { data: publicData } = client.storage.from(STORAGE_BUCKET).getPublicUrl(filePath);
+      uploadedUrls.push(publicData.publicUrl);
+    }
+    const allUrls = [...new Set([...getProductPhotos(editingPhotoProduct), ...uploadedUrls])];
+    const { error: updateError } = await client.from("products").update({ image_urls: allUrls, image_url: allUrls[0] || "" }).eq("id", editingPhotoProduct.id);
     if (updateError) throw updateError;
-    editingPhotoProduct.image_url = publicData.publicUrl;
-    message(dashboardMessage, `Foto de “${editingPhotoProduct.name}” atualizada. Ela já pode aparecer na loja.`);
+    editingPhotoProduct.image_urls = allUrls;
+    editingPhotoProduct.image_url = allUrls[0] || "";
+    message(dashboardMessage, `${uploadedUrls.length} foto(s) adicionada(s) a “${editingPhotoProduct.name}”.`);
     renderAdminProducts();
     closePhotoModal();
   } catch (error) {
     console.error(error);
-    message(photoMessage, "Não foi possível salvar a foto. Confira se executou supabase-storage.sql e tente novamente.", true);
+    message(photoMessage, "Não foi possível salvar as fotos. Confira se executou o SQL de múltiplas fotos e as políticas do Storage.", true);
   } finally {
     savePhotoButton.disabled = false;
     removePhotoButton.disabled = false;
   }
 });
 removePhotoButton.addEventListener("click", async () => {
-  if (!client || !editingPhotoProduct || !editingPhotoProduct.image_url) return;
+  if (!client || !editingPhotoProduct || !getProductPhotos(editingPhotoProduct).length) return;
+  if (!confirm("Tem certeza de que deseja remover todas as fotos deste produto?")) return;
   removePhotoButton.disabled = true;
   savePhotoButton.disabled = true;
-  message(photoMessage, "Removendo foto do produto...");
-  const { error } = await client.from("products").update({ image_url: "" }).eq("id", editingPhotoProduct.id);
+  message(photoMessage, "Removendo fotos do produto...");
+  const { error } = await client.from("products").update({ image_urls: [], image_url: "" }).eq("id", editingPhotoProduct.id);
   if (error) {
     console.error(error);
-    message(photoMessage, "Não foi possível remover a foto. Confira as permissões do Supabase.", true);
+    message(photoMessage, "Não foi possível remover as fotos. Confira as permissões do Supabase.", true);
     removePhotoButton.disabled = false;
     savePhotoButton.disabled = false;
     return;
   }
+  editingPhotoProduct.image_urls = [];
   editingPhotoProduct.image_url = "";
   renderAdminProducts();
-  message(dashboardMessage, `Foto removida de “${editingPhotoProduct.name}”.`);
+  message(dashboardMessage, `Fotos removidas de “${editingPhotoProduct.name}”.`);
   closePhotoModal();
   savePhotoButton.disabled = false;
   removePhotoButton.disabled = false;

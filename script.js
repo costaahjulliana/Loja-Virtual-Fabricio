@@ -46,8 +46,9 @@ function renderProducts(filter = "todos") {
   const filteredProducts = products.filter(product => filter === "todos" || product.category === filter);
   productGrid.innerHTML = filteredProducts.map(product => {
     const available = product.available;
-    const imageMarkup = product.image_url
-      ? `<img class="product-image" src="${escapeHtml(product.image_url)}" alt="${escapeHtml(product.name)}" loading="lazy">`
+    const photos = Array.isArray(product.image_urls) && product.image_urls.length ? product.image_urls : (product.image_url ? [product.image_url] : []);
+    const imageMarkup = photos.length
+      ? `<div class="product-gallery"><img class="product-image" src="${escapeHtml(photos[0])}" alt="${escapeHtml(product.name)}" loading="lazy">${photos.length > 1 ? `<div class="product-thumbnails">${photos.map((url, i) => `<button class="product-thumbnail ${i === 0 ? "active" : ""}" type="button" data-photo="${i}" aria-label="Ver foto ${i+1} de ${escapeHtml(product.name)}"><img src="${escapeHtml(url)}" alt=""></button>`).join("")}</div>` : ""}</div>`
       : `<div class="image-placeholder">FOTO DO PRODUTO</div>`;
     const message = `Olá! Tenho interesse no produto "${product.name}", anunciado por ${formatPrice(product.price)}. Ele ainda está disponível?`;
     const action = available
@@ -60,6 +61,13 @@ function renderProducts(filter = "todos") {
       <div class="product-bottom"><span class="product-price">${formatPrice(product.price)}</span>${action}</div></div>
     </article>`;
   }).join("");
+  productGrid.querySelectorAll(".product-thumbnail").forEach(button => button.addEventListener("click", () => {
+    const gallery = button.closest(".product-gallery");
+    const photos = Array.from(gallery.querySelectorAll(".product-thumbnail img")).map(img => img.src);
+    const main = gallery.querySelector(".product-image");
+    main.src = photos[Number(button.dataset.photo)];
+    gallery.querySelectorAll(".product-thumbnail").forEach(item => item.classList.toggle("active", item === button));
+  }));
   if (!filteredProducts.length) productGrid.innerHTML = "<p>Nenhum item encontrado nesta categoria.</p>";
 }
 function escapeHtml(value) {
