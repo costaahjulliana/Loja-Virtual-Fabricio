@@ -8,7 +8,7 @@
 */
 const SUPABASE_URL = "https://mytsjfcegfmwuomvnvsc.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_YygDZy2UAAcWPqgRrdOeFQ_7PmjjEk4";
-const WHATSAPP_NUMBER = "5511999999999";
+const WHATSAPP_NUMBER = "5511972139023";
 
 const productGrid = document.querySelector("#product-grid");
 const filterButtons = document.querySelectorAll(".filter-button");
