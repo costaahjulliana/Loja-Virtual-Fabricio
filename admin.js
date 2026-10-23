@@ -82,7 +82,17 @@ function renderAdminProducts() {
     </article>`).join("");
   if (!shown.length) productList.innerHTML = "<p>Nenhum produto encontrado.</p>";
   productList.querySelectorAll(".status-toggle").forEach(button => button.addEventListener("click", () => toggleAvailability(button)));
-  productList.querySelectorAll(".photo-edit-button").forEach(button => button.addEventListener("click", () => openPhotoModal(Number(button.dataset.photoId))));
+  productList.onclick = event => {
+    const photoButton = event.target.closest(".photo-edit-button");
+    if (photoButton) {
+      event.preventDefault();
+      openPhotoModal(Number(photoButton.dataset.photoId));
+    }
+  };
+  // Delegação de evento: mantém o botão funcional mesmo após re-renderizar a lista.
+  productList.querySelectorAll(".photo-edit-button").forEach(button => {
+    button.onclick = () => openPhotoModal(Number(button.dataset.photoId));
+  });
 }
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
