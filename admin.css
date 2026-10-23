@@ -34,3 +34,23 @@
   .status-toggle { width: 100%; }
 }
 
+.admin-product-main { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.admin-thumb { width: 78px; height: 68px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); flex: 0 0 auto; }
+.admin-thumb-empty { display: grid; place-items: center; background: #f1f1ee; color: var(--muted); font-size: .68rem; text-align: center; }
+.admin-row-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+.photo-edit-button { border: 1px solid var(--border); background: var(--surface); color: var(--ink); padding: 9px 12px; border-radius: 4px; cursor: pointer; font: inherit; font-size: .85rem; }
+.photo-edit-button:hover { border-color: var(--ink); }
+.photo-modal { position: fixed; inset: 0; z-index: 1000; background: rgba(12, 20, 30, .62); display: grid; place-items: center; padding: 20px; overflow-y: auto; }
+.photo-modal-card { width: min(520px, 100%); background: var(--surface); color: var(--ink); border-radius: 10px; padding: 24px; box-shadow: 0 18px 70px rgba(0,0,0,.22); }
+.photo-modal-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.photo-modal-heading h2 { font-size: 1.45rem; margin: 0 0 8px; }
+.photo-product-name { font-weight: 700; margin: 12px 0; }
+.photo-preview-wrap { min-height: 190px; border: 1px dashed var(--border); border-radius: 8px; background: #f8f8f5; display: grid; place-items: center; overflow: hidden; color: var(--muted); margin-bottom: 16px; }
+.photo-preview-wrap img { width: 100%; max-height: 300px; object-fit: contain; }
+.upload-label { display: block; font-weight: 700; font-size: .9rem; margin-bottom: 8px; }
+#photo-file { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 5px; background: white; }
+.photo-help { font-size: .82rem; color: var(--muted); margin: 8px 0; }
+.photo-modal-actions { display: flex; justify-content: space-between; gap: 10px; margin-top: 16px; }
+.photo-modal-actions button { cursor: pointer; }
+.photo-modal-actions button:disabled { opacity: .5; cursor: wait; }
+@media (max-width: 620px) { .admin-row-actions { justify-content: stretch; } .admin-row-actions button { flex: 1 1 100%; } .admin-thumb { width: 66px; height: 60px; } .photo-modal-card { padding: 18px; } .photo-modal-actions { flex-direction: column-reverse; } }
