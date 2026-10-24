@@ -69,5 +69,5 @@ body { background: var(--paper); color: var(--ink); }
 .site-footer p { color: #6f675b; }
 .site-footer p:last-child { border-top-color: #ded4c4; }
 .vamos-conversar {
-  color: #ffffff !important;
+  color: #ffffff;
 }
