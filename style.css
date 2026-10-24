@@ -68,7 +68,6 @@ body { background: var(--paper); color: var(--ink); }
 .site-footer { background: #f0e9dd; }
 .site-footer p { color: #6f675b; }
 .site-footer p:last-child { border-top-color: #ded4c4; }
-/* Cor branca da frase "Vamos conversar" */
 .vamos-conversar {
   color: #ffffff !important;
 }
