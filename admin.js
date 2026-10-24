@@ -81,6 +81,9 @@ function renderAdminProducts() {
         <button class="status-toggle" type="button" data-id="${p.id}" data-available="${p.available}">
           ${p.available ? "Marcar como vendido" : "Marcar como disponível"}
         </button>
+        <button class="delete-product-button" type="button" data-delete-id="${p.id}">
+  Excluir produto
+</button>
       </div>
     </article>`).join("");
   if (!shown.length) productList.innerHTML = "<p>Nenhum produto encontrado.</p>";
@@ -103,6 +106,12 @@ function renderAdminProducts() {
       event.preventDefault();
       editProductDescription(descriptionButton);
       return;
+      const deleteButton = event.target.closest(".delete-product-button");
+if (deleteButton) {
+  event.preventDefault();
+  deleteProduct(deleteButton);
+  return;
+}
     }
     const photoButton = event.target.closest(".photo-edit-button");
     if (photoButton) {
@@ -219,6 +228,52 @@ async function toggleAvailability(button) {
   const product = allProducts.find(p => p.id === id);
   if (product) product.available = nextAvailable;
   message(dashboardMessage, "Disponibilidade atualizada com sucesso.");
+  renderAdminProducts();
+}
+async function deleteProduct(button) {
+  if (!client) return;
+
+  const id = Number(button.dataset.deleteId);
+  const product = allProducts.find(p => Number(p.id) === id);
+
+  if (!product) {
+    alert("Produto não encontrado.");
+    return;
+  }
+
+  const confirmed = confirm(
+    `Tem certeza de que deseja excluir "${product.name}"?\n\nEssa ação não pode ser desfeita.`
+  );
+
+  if (!confirmed) return;
+
+  button.disabled = true;
+  message(dashboardMessage, "Excluindo produto...");
+
+  const { error } = await client
+    .from("products")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    console.error("Erro ao excluir produto:", error);
+    button.disabled = false;
+
+    message(
+      dashboardMessage,
+      "Não foi possível excluir. Verifique as permissões no Supabase.",
+      true
+    );
+    return;
+  }
+
+  allProducts = allProducts.filter(p => Number(p.id) !== id);
+
+  message(
+    dashboardMessage,
+    `Produto "${product.name}" excluído com sucesso.`
+  );
+
   renderAdminProducts();
 }
 loginForm.addEventListener("submit", async event => {
