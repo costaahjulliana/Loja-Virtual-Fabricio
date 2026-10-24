@@ -75,6 +75,8 @@ function renderAdminProducts() {
       </div>
       <div class="admin-row-actions">
         <button class="name-edit-button" type="button" data-name-id="${p.id}">Editar nome</button>
+        <button class="price-edit-button" type="button" data-price-id="${p.id}">Alterar preço</button>
+        <button class="description-edit-button" type="button" data-description-id="${p.id}">Editar descrição</button>
         <button class="photo-edit-button" type="button" data-photo-id="${p.id}"> ${(p.image_urls && p.image_urls.length) || p.image_url ? `Fotos (${(p.image_urls && p.image_urls.length) || 1})` : "Adicionar fotos"}</button>
         <button class="status-toggle" type="button" data-id="${p.id}" data-available="${p.available}">
           ${p.available ? "Marcar como vendido" : "Marcar como disponível"}
@@ -88,6 +90,18 @@ function renderAdminProducts() {
     if (nameButton) {
       event.preventDefault();
       editProductName(nameButton);
+      return;
+    }
+    const priceButton = event.target.closest(".price-edit-button");
+    if (priceButton) {
+      event.preventDefault();
+      editProductPrice(priceButton);
+      return;
+    }
+    const descriptionButton = event.target.closest(".description-edit-button");
+    if (descriptionButton) {
+      event.preventDefault();
+      editProductDescription(descriptionButton);
       return;
     }
     const photoButton = event.target.closest(".photo-edit-button");
@@ -131,6 +145,64 @@ async function editProductName(button) {
   message(dashboardMessage, "Nome do produto atualizado com sucesso.");
   renderAdminProducts();
 }
+async function editProductPrice(button) {
+  if (!client) return;
+  const id = Number(button.dataset.priceId);
+  const product = allProducts.find(p => Number(p.id) === id);
+  if (!product) return;
+
+  const enteredPrice = prompt("Digite o novo preço do produto (ex.: 249,90):", Number(product.price).toFixed(2).replace(".", ","));
+  if (enteredPrice === null) return;
+  const normalizedPrice = enteredPrice.trim().replace(/\s/g, "").replace(/\.(?=\d{3}(?:\D|$))/g, "").replace(",", ".");
+  const price = Number(normalizedPrice);
+
+  if (!normalizedPrice || !Number.isFinite(price) || price < 0) {
+    alert("Digite um preço válido, por exemplo 249,90.");
+    return;
+  }
+  if (price === Number(product.price)) return;
+
+  button.disabled = true;
+  message(dashboardMessage, "Salvando novo preço...");
+  const { error } = await client.from("products").update({ price }).eq("id", id);
+  button.disabled = false;
+
+  if (error) {
+    console.error(error);
+    message(dashboardMessage, "Não foi possível atualizar o preço. Confira sua sessão e as políticas do Supabase.", true);
+    return;
+  }
+  product.price = price;
+  message(dashboardMessage, "Preço atualizado com sucesso.");
+  renderAdminProducts();
+}
+
+async function editProductDescription(button) {
+  if (!client) return;
+  const id = Number(button.dataset.descriptionId);
+  const product = allProducts.find(p => Number(p.id) === id);
+  if (!product) return;
+
+  const enteredDescription = prompt("Digite a nova descrição do produto:", product.description || "");
+  if (enteredDescription === null) return;
+  const description = enteredDescription.trim();
+  if (description === (product.description || "")) return;
+
+  button.disabled = true;
+  message(dashboardMessage, "Salvando descrição...");
+  const { error } = await client.from("products").update({ description }).eq("id", id);
+  button.disabled = false;
+
+  if (error) {
+    console.error(error);
+    message(dashboardMessage, "Não foi possível atualizar a descrição. Confira sua sessão e as políticas do Supabase.", true);
+    return;
+  }
+  product.description = description;
+  message(dashboardMessage, "Descrição atualizada com sucesso.");
+  renderAdminProducts();
+}
+
 async function toggleAvailability(button) {
   if (!client) return;
   const id = Number(button.dataset.id);
