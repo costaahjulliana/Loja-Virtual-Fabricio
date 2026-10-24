@@ -1,0 +1,66 @@
+/* Padronização dos botões de ações dos produtos no painel administrativo */
+.admin-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.admin-row-actions .name-edit-button,
+.admin-row-actions .price-edit-button,
+.admin-row-actions .description-edit-button,
+.admin-row-actions .photo-edit-button,
+.admin-row-actions .status-toggle {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  min-height: 39px;
+  padding: 10px 13px;
+  border: 1px solid #d9cbb3;
+  border-radius: 9px;
+  background: #f0e8da;
+  color: #29251f;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.admin-row-actions .name-edit-button:hover,
+.admin-row-actions .price-edit-button:hover,
+.admin-row-actions .description-edit-button:hover,
+.admin-row-actions .photo-edit-button:hover,
+.admin-row-actions .status-toggle:hover {
+  background: #171717;
+  color: #fff;
+  border-color: #171717;
+}
+
+.admin-row-actions .name-edit-button:disabled,
+.admin-row-actions .price-edit-button:disabled,
+.admin-row-actions .description-edit-button:disabled,
+.admin-row-actions .photo-edit-button:disabled,
+.admin-row-actions .status-toggle:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+@media (max-width: 700px) {
+  .admin-row-actions {
+    justify-content: flex-start;
+  }
+
+  .admin-row-actions .name-edit-button,
+  .admin-row-actions .price-edit-button,
+  .admin-row-actions .description-edit-button,
+  .admin-row-actions .photo-edit-button,
+  .admin-row-actions .status-toggle {
+    flex: 1 1 145px;
+  }
+}
