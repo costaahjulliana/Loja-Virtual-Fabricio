@@ -1,0 +1,93 @@
+/* Formulário de cadastro de novos produtos — tema preto e bege */
+.new-product-panel {
+  border-color: #e4dacb;
+  background: rgba(255, 255, 255, .96);
+}
+.new-product-heading { margin-bottom: 18px; }
+.new-product-heading .eyebrow {
+  margin: 0 0 8px;
+  color: #82683d;
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+.new-product-heading h2 {
+  margin: 0 0 8px;
+  color: #171717;
+  font-size: 1.5rem;
+}
+.new-product-heading p:last-child {
+  margin: 0;
+  color: #71695e;
+  line-height: 1.6;
+}
+.new-product-form {
+  display: grid;
+  gap: 9px;
+  max-width: 720px;
+}
+.new-product-form label {
+  margin-top: 8px;
+  color: #29251f;
+  font-size: .9rem;
+  font-weight: 700;
+}
+.new-product-form input,
+.new-product-form select,
+.new-product-form textarea {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d9cbb3;
+  border-radius: 9px;
+  background: #fbfaf7;
+  color: #29251f;
+  font: inherit;
+}
+.new-product-form input:focus,
+.new-product-form select:focus,
+.new-product-form textarea:focus {
+  outline: 2px solid #d9cbb3;
+  outline-offset: 1px;
+}
+.new-product-help {
+  margin: 0;
+  color: #71695e;
+  font-size: .84rem;
+  line-height: 1.5;
+}
+.new-product-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+.new-product-preview-item {
+  display: grid;
+  width: 112px;
+  gap: 5px;
+  color: #71695e;
+  font-size: .75rem;
+  overflow-wrap: anywhere;
+}
+.new-product-preview-item img {
+  width: 112px;
+  height: 92px;
+  object-fit: cover;
+  border: 1px solid #e4dacb;
+  border-radius: 9px;
+}
+.new-product-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 8px;
+}
+.new-product-actions button:disabled {
+  cursor: wait;
+  opacity: .6;
+}
+@media (max-width: 600px) {
+  .new-product-actions { flex-direction: column; }
+  .new-product-actions .button { width: 100%; }
+}
