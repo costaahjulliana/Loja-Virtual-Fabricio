@@ -185,4 +185,26 @@
   gap: 8px;
 }
 
+/* Padronização dos botões de preço e descrição */
+.btn-edit-price,
+.btn-edit-description {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.btn-edit-price:hover,
+.btn-edit-description:hover {
+    opacity: 0.85;
+}
+
 
